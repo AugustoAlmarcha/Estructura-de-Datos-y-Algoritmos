@@ -13,6 +13,9 @@ class ListaSecuencial:
     def vacia(self):
         return self.__ultimo == -1
     
+    def llena(self):
+        return self.__ultimo == self.__tamaño-1
+    
     def primer_elemento(self):
         if self.vacia():
             return None
@@ -40,7 +43,7 @@ class ListaSecuencial:
         elif posicion < 0 or posicion > self.__ultimo + 1:
             print("Error: Posición inválida.")
             return
-        if posicion <= self.__ultimo:
+        else:
             i = self.__ultimo
             while i >= posicion:
                 self.__lista[i + 1] = self.__lista[i]
@@ -81,8 +84,10 @@ class ListaSecuencial:
             return None
 
     def recorrer(self):
-        for i in range(self.__ultimo + 1):
+        i=0
+        while i<=self.__ultimo:
             print(self.__lista[i])
+            i+=1
 
     
 
