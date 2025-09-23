@@ -32,35 +32,34 @@ class ListaEncadenada:
         while i < posicion:
             aux = aux.getSiguiente()
             i += 1
-        return aux.getSiguiente().getDato()
+        return aux.getSiguiente()
     
     def anterior(self, posicion):
-        if posicion <= 0 or posicion >= self.__cantidad:
+        if posicion <= 0 or posicion > self.__cantidad:
             return None
         aux = self.__cabeza
         i = 0
         while i < posicion - 1:
             aux = aux.getSiguiente()
             i += 1
-        return aux.getDato()
+        return aux
     
-    def insertar(self,elemento, posicion):
+    def insertar(self, item, posicion):
         if posicion < 0 or posicion > self.__cantidad:
-            print("Posición inválida")
+            print("Error")
             return
-        nuevonodo = Nodo(elemento)
+        
+        nuevonodo = Nodo(item)
+        
         if posicion == 0:
             nuevonodo.setSiguiente(self.__cabeza)
             self.__cabeza = nuevonodo
         else:
-            aux=self.__cabeza
-            i=0
-            while i < posicion -1:
-                aux = aux.getSiguiente()
-                i+=1
-            nuevonodo.setSiguiente(aux.getSiguiente())
-            aux.setSiguiente(nuevonodo)
-        self.__cantidad +=1
+            anterior = self.anterior(posicion)
+            nuevonodo.setSiguiente(anterior.getSiguiente())
+            anterior.setSiguiente(nuevonodo)
+        
+        self.__cantidad += 1
 
     def suprimir(self, posicion):
         if posicion < 0 or posicion >= self.__cantidad or self.vacia():
@@ -70,14 +69,10 @@ class ListaEncadenada:
             aux = self.__cabeza
             self.__cabeza = aux.getSiguiente()
         else:
-            ant = self.__cabeza
-            i=0
-            while i < posicion -1:
-                ant = ant.getSiguiente()
-                i+=1
-            aux = ant.getSiguiente()
-            ant.setSiguiente(aux.getSiguiente())
-        self.__cantidad -=1
+            anterior = self.anterior(posicion)
+            aux= anterior.getSiguiente()
+            anterior.setSiguiente(aux.getSiguiente())
+        self.__cantidad -=1 
         return aux.getDato()
     
     def recuperar(self,posicion):
