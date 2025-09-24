@@ -103,12 +103,11 @@ class ListaEncadenada:
             return None
     
     def recorrer(self):
-        i=0
         aux=self.__cabeza
-        while i < self.__cantidad:
+        while aux is not None:
             print(aux.getDato())
             aux=aux.getSiguiente()
-            i+=1
+
 
 if __name__ == '__main__':
     lista = ListaEncadenada()
@@ -124,6 +123,12 @@ if __name__ == '__main__':
     lista.recorrer()
     print("Suprimir elemento en posición 1:", lista.suprimir(1))
     print("Recorrer la lista después de suprimir:")
+    lista.recorrer()
+    lista.insertar(40,1)
+    print("---------")
+    lista.recorrer()
+    lista.insertar(50,1)
+    print("---------")
     lista.recorrer()
 
             
