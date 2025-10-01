@@ -40,7 +40,7 @@ class ListaSecuencial:
         posicion = 0
         while posicion <= self.__ultimo and self.__lista[posicion] < elemento: # Buscar la posición correcta para mantener el orden
             posicion += 1
-        
+
         i = self.__ultimo 
         while i >= posicion:                            # Desplazar los elementos a la derecha
             self.__lista[i + 1] = self.__lista[i]
@@ -68,22 +68,25 @@ class ListaSecuencial:
         else:
             return self.__lista[posicion]
     
-    def buscar(self,elemento):
-        i=0
-        band=False
-        while i <= self.__ultimo and band is False:
-            if self.__lista[i] == elemento:
-                band=True
-                print(f"Se encontro el elemento buscado en la posicion {i} (Comienza del 0)")
-                return i
-            i+=1
-        if band is False:
-            print("No se encontro el elemento buscado")
-            return None
+    def buscar(self, elemento):
+        inferior = 0
+        superior = self.__ultimo
+        while inferior <= superior:
+            mitad = (inferior + superior) // 2
+            if self.__lista[mitad] == elemento:
+                return mitad
+            elif self.__lista[mitad] > elemento:
+                superior = mitad - 1
+            else:
+                inferior = mitad + 1
+        return None
 
     def recorrer(self):
-        for i in range(self.__ultimo + 1):
+        i=0
+        while i<=self.__ultimo:
             print(self.__lista[i])
+            i+=1
+
 
 if __name__ == '__main__':
     lista = ListaSecuencial()
