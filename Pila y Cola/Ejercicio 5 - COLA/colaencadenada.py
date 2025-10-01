@@ -14,7 +14,6 @@ class ColaEncadenada:
 
     def insertar(self, elemento):
         nuevonodo=Nodo(elemento)
-        nuevonodo.setSiguiente(None)
         if self.__ultimo is None:
             self.__primero=nuevonodo
         else:

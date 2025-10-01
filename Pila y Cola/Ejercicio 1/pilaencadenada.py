@@ -30,7 +30,7 @@ class Pilaencadenada:
     
     def mostrar(self):
         aux = self.__tope
-        while aux != None:
+        while aux is not None:
             print(aux.getDato())
             aux = aux.getSiguiente()
         

@@ -5,7 +5,7 @@ class PilaSecuencial:
     __cantidad : int
     __elementos : np.ndarray
 
-    def __init__(self, cantidad=0):
+    def __init__(self, cantidad=10):
         self.__cantidad = cantidad
         self.__tope= -1
         self.__elementos = np.empty(self.__cantidad, dtype=object)
@@ -13,8 +13,11 @@ class PilaSecuencial:
     def vacia(self):
         return self.__tope == -1
     
+    def llena(self):
+        return self.__tope == self.__cantidad -1
+    
     def insertar(self, dato):
-        if self.__tope < self.__cantidad - 1:
+        if not self.llena():
             self.__tope += 1
             self.__elementos[self.__tope] = dato
             return dato

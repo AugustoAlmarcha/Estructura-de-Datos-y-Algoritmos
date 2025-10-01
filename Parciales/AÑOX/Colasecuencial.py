@@ -6,7 +6,7 @@ class cola:
     __ultimo:int
     __cantidad:int
 
-    def __init__(self, tamanio=10):
+    def __init__(self, tamanio=100):
         self.__listacola=np.empty(tamanio,dtype=object)
         self.__tamanio=tamanio
         self.__primero=0
