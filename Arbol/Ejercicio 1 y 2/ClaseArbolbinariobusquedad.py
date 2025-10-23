@@ -15,8 +15,8 @@ class ArbolBinarioBusqueda:
         return self.__raiz
 
     def insertar (self, dato):
-        nuevonodo = NodoArbol(dato)
         if self.vacio():
+            nuevonodo = NodoArbol(dato)
             self.__raiz = nuevonodo
             self.__cantidad += 1
             return
@@ -99,7 +99,7 @@ class ArbolBinarioBusqueda:
         if nodo is None:
             print("Error: el dato no existe")
             return None
-
+        
         if dato == nodo.getDato():
             # Nodo encontrado
             print(f"Éxito: elemento {dato} encontrado")
