@@ -87,9 +87,9 @@ class GrafoSecuencial:
 
         for v in range(self.__tamanio):
             if d[v] == 0:
-                self.DFS_visita(v, d, f, tiempo, detectar_ciclo=False, procesar_nodo=True)
-    
-    def DFS_visita(self, s, d, f, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
+                self.REP_visita(v, d, f, tiempo, detectar_ciclo=False, procesar_nodo=True)
+
+    def REP_visita(self, s, d, f, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
         tiempo[0] += 1
         d[s] = tiempo[0]
 
@@ -99,7 +99,7 @@ class GrafoSecuencial:
         for u in range(self.__tamanio):
             if self.__grafo[s][u] == 1:
                 if d[u] == 0:
-                    if not self.DFS_visita(u, d, f, tiempo, s, detectar_ciclo, procesar_nodo):
+                    if not self.REP_visita(u, d, f, tiempo, s, detectar_ciclo, procesar_nodo):
                         return False
                 elif detectar_ciclo and f[u] == 0 and u != padre:
                     return False
@@ -115,7 +115,7 @@ class GrafoSecuencial:
 
         for v in range(self.__tamanio):
             if d[v] == 0:
-                if not self.DFS_visita(v, d, f, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
+                if not self.REP_visita(v, d, f, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
                     return False
         return True
 
