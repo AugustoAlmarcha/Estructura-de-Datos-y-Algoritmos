@@ -199,23 +199,23 @@ class GrafoEnlazado:
         grad_salida = self.GradoSalida(v)
         return grad_entrada > 0 and grad_salida == 0
     
-if __name__ == "__main__":
-    g = GrafoEnlazado(5)
-    g.agregar_arista(0, 1, 2.0)
-    g.agregar_arista(0, 2, 4.0)
-    g.agregar_arista(1, 2, 1.0)
-    g.agregar_arista(1, 3, 7.0)
-    g.agregar_arista(2, 4, 3.0)
-    g.agregar_arista(3, 4, 1.0)
+# if __name__ == "__main__":
+#     g = GrafoEnlazado(5)
+#     g.agregar_arista(0, 1, 2.0)
+#     g.agregar_arista(0, 2, 4.0)
+#     g.agregar_arista(1, 2, 1.0)
+#     g.agregar_arista(1, 3, 7.0)
+#     g.agregar_arista(2, 4, 3.0)
+#     g.agregar_arista(3, 4, 1.0)
 
-    print("Camino mínimo de 0 a 4:", g.Camino(0, 4))
-    print("¿El grafo es fuertemente conexo?", g.fuertementeconexo())
-    print("Recorrido en amplitud desde el nodo 0:", g.REA(0))
-    print("¿El grafo es acíclico?", g.aciclico())
-    print("Grado de entrada del nodo 2:", g.GradoEntrada(2))
-    print("Grado de salida del nodo 1:", g.GradoSalida(1))
-    print("¿El nodo 0 es fuente?", g.NodoFuente(0))
-    print("¿El nodo 4 es sumidero?", g.NodoSumidero(4))
+#     print("Camino mínimo de 0 a 4:", g.Camino(0, 4))
+#     print("¿El grafo es fuertemente conexo?", g.fuertementeconexo())
+#     print("Recorrido en amplitud desde el nodo 0:", g.REA(0))
+#     print("¿El grafo es acíclico?", g.aciclico())
+#     print("Grado de entrada del nodo 2:", g.GradoEntrada(2))
+#     print("Grado de salida del nodo 1:", g.GradoSalida(1))
+#     print("¿El nodo 0 es fuente?", g.NodoFuente(0))
+#     print("¿El nodo 4 es sumidero?", g.NodoSumidero(4))
     
 
     
