@@ -70,7 +70,44 @@ class ArbolExtension(ArbolBinarioBusqueda):
         # Es 1 (el nodo actual) + la cuenta del subárbol izquierdo + la cuenta del subárbol derecho.
         return 1 + self.contarNodosRecursivo(nodo.getIzquierdo()) + \
                    self.contarNodosRecursivo(nodo.getDerecho())
-    
+
+    # ----------------------------------------------------
+    # Ejercicio N°2 - Inciso b): Cantidad de Nodos Recursiva (versión alternativa)
+    # ----------------------------------------------------
+    def mostrar(self):
+        if self.vacio():
+            print("El arbol esta vacio.")
+        else:
+            contador = self.mostrarRecursivo(self.getRaiz())
+            print(f"Cantidad total de nodos (recursivo - versión alternativa): {contador}")
+    def mostrarRecursivo(self,nodo):
+        if nodo is not None:
+            contador = 1 + self.mostrarRecursivo(nodo.getIzquierdo()) + \
+            self.mostrarRecursivo(nodo.getDerecho())
+            print(f"Nodo: {nodo.getDato()}")
+            return contador
+        else:
+            return 0
+        
+    #---------------------------------------------------
+    #Mostrar la Altura de un Arbol
+    #---------------------------------------------------
+    def alturax(self):
+        if self.vacio():
+            print("El arbol esta vacio")
+            return
+        else:
+            altura=self.alturaxrecursivo(self.getRaiz()) 
+        print(f"La altura del arbol es de {altura}")
+
+    def alturaxrecursivo(self,nodox):
+        if nodox is not None:
+            izquierdo = self.alturaxrecursivo(nodox.getIzquierdo())
+            derecho = self.alturaxrecursivo(nodox.getDerecho())
+            return 1 + max(izquierdo, derecho)
+        else:
+            return -1
+
     # ----------------------------------------------------
     # Ejercicio N°2 - Inciso c): Mostrar Sucesores
     # ----------------------------------------------------
@@ -95,6 +132,32 @@ class ArbolExtension(ArbolBinarioBusqueda):
             
         if nodo_origen.getIzquierdo() is None and nodo_origen.getDerecho() is None:
              print("  No tiene descendientes.")
+    #------------------------------------------------------
+    #Mostrar Los sucesores alternativo
+    #------------------------------------------------------
+    def mostrarsucesores(self,clave):
+        if self.vacio():
+            print("El arbol esta vacio")
+            return
+        else:
+            nodobuscado = self.buscar(clave)
+            if nodobuscado is None:
+                print("El nodo no se encuentra en el arbol")
+                return 
+            elif nodobuscado.getIzquierdo() is None and nodobuscado.getDerecho() is None:
+                print("El nodo no tiene sucesores")
+                return
+            else:
+                self.mostrarsucesoresrecursivo(nodobuscado,clave)
+
+    def mostrarsucesoresrecursivo(self,nodobuscado,clave):
+        if nodobuscado is not None:
+            self.mostrarsucesoresrecursivo(nodobuscado.getIzquierdo(),clave)
+            print(f"Sucesor de {clave} es: {nodobuscado.getDato()}" if nodobuscado.getDato() != clave else "")
+            self.mostrarsucesoresrecursivo(nodobuscado.getDerecho(),clave)
+
+
+
 
     # Función auxiliar para recorrer e imprimir el subárbol (Recorrido PreOrden)
     def imprimirSubarbol(self, nodo):
@@ -104,19 +167,56 @@ class ArbolExtension(ArbolBinarioBusqueda):
             self.imprimirSubarbol(nodo.getDerecho())
 
 
+    #Otra version de buscar padre y hermano  
+
+    def buscarpadreyhermano(self,x):
+        if self.vacio():
+            print("El árbol está vacío.")
+            return
+        else:
+            self.buscarpadreyhermanoRecursivo(self.getRaiz(),x)
+
+    def buscarpadreyhermanoRecursivo(self,nodox,datox):
+        if datox == self.getRaiz().getDato():
+            print("El nodo ingresado es la raíz, no tiene padre ni hermano.")
+            return
+        if nodox is None:
+            print("No se encontro el nodo con el dato ingresado.")
+            return
+        if nodox.getIzquierdo() is not None and nodox.getIzquierdo().getDato() == datox or nodox.getDerecho() is not None and nodox.getDerecho().getDato() == datox:
+            padre = nodox
+        else:
+            padre = None
+        if datox < nodox.getDato():
+            self.buscarpadreyhermanoRecursivo(nodox.getIzquierdo(),datox)
+        else:
+            self.buscarpadreyhermanoRecursivo(nodox.getDerecho(),datox)
+        hermano = None
+        if padre is not None and padre.getIzquierdo() is not None and padre.getIzquierdo().getDato() != datox:
+            hermano = padre.getIzquierdo()
+        elif padre is not None and padre.getDerecho() is not None and padre.getDerecho().getDato() != datox:
+            hermano = padre.getDerecho()
+        if padre is not None or hermano is not None:
+            print(f"El padre del nodo {datox} es: {padre.getDato()} y el hermano es: {hermano.getDato() if hermano is not None else 'No tiene hermano.'}")
+
 if __name__ == '__main__':
     arbol = ArbolExtension() 
     
-    arbol.insertar(50)
-    arbol.insertar(30)
-    arbol.insertar(70)
-    arbol.insertar(20)
-    arbol.insertar(40)
-    arbol.insertar(60)
+    arbol.insertar(10)
+    arbol.insertar(7)
+    arbol.insertar(5)
+    arbol.insertar(9)
+    arbol.insertar(15)
 
     print("\n--- Recorrido InOrden del Árbol ---")
     arbol.inOrden()
     print("-" * 30)
+
+    print("Metodos Alternativos")
+    arbol.buscarpadreyhermano(10)
+    arbol.mostrar()
+    arbol.alturax()
+    arbol.mostrarsucesores(15)
 
     print("--- Prueba del Ejercicio N°2 a) ---")
     print("\n[Busqueda: 40]")

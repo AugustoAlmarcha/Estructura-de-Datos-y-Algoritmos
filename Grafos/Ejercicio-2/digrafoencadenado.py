@@ -1,9 +1,8 @@
-#Digrafo Encadenado Ponderado
 import numpy as np
 from Colasecuencial import cola
 from ClaseNodo import Nodo
 
-class GrafoEnlazado:
+class DigrafoEnlazado:
     __grafo: np.ndarray
     __tamanio: int
 
@@ -11,9 +10,9 @@ class GrafoEnlazado:
         self.__tamanio = tamanio
         self.__grafo = np.array([None] * tamanio, dtype=object)
 
-    def agregar_arista(self, u, v, peso=1.0):
+    def agregar_arista(self, u, v,):
         if 0 <= u < self.__tamanio and 0 <= v < self.__tamanio:
-            nuevo_nodo_v = Nodo(v, peso)
+            nuevo_nodo_v = Nodo(v)
             nuevo_nodo_v.setSiguiente(self.__grafo[u])
             self.__grafo[u] = nuevo_nodo_v
         else:
@@ -26,9 +25,40 @@ class GrafoEnlazado:
         lista = []
         actual = self.__grafo[u]
         while actual is not None:
-            lista.append((actual.getDato(), actual.getPeso()))
+            lista.append((actual.getDato()))
             actual = actual.getSiguiente()
         return lista
+    
+    def camino(self, u, v): #Recorrido en Anchura
+        if not (0 <= u < self.__tamanio and 0 <= v < self.__tamanio):
+            print("Error: nodos fuera de rango.")
+            return None
+        visitado = [False] * self.__tamanio
+        predecesor = [-1] * self.__tamanio
+        c = cola(self.__tamanio)
+        visitado[u] = True
+        c.insertar(u)
+
+        while not c.vacia():
+            actual = c.suprimir()
+            if actual == v:
+                # reconstrucción del camino
+                camino = []
+                while actual != -1:
+                    camino.insert(0, actual)
+                    actual = predecesor[actual]
+                return camino
+            
+            actualnodo = self.__grafo[actual]
+            while actualnodo is not None:
+                adyacente = actualnodo.getDato()
+                if not visitado[adyacente]:
+                    visitado[adyacente] = True
+                    predecesor[adyacente] = actual
+                    c.insertar(adyacente)
+                actualnodo = actualnodo.getSiguiente()
+        print("No existe camino entre", u, "y", v)
+        return None
     
     def Camino(self, u, v):
         # Tabla T: [0: conocido, 1: distancia, 2: predecesor]
@@ -95,36 +125,36 @@ class GrafoEnlazado:
 
             while not c.vacia():
                 actual = c.suprimir()
-                nodo_adyacente = self.__grafo[actual]  # cabeza de la lista enlazada
-                while nodo_adyacente is not None:
-                    w = nodo_adyacente.getDato()
-                    if not visitado[w]:
-                        visitado[w] = True
-                        c.insertar(w)
-                    nodo_adyacente = nodo_adyacente.getSiguiente()
 
+                actualnodo = self.__grafo[actual]  # cabeza de la lista enlazada
+                while actualnodo is not None:
+                    ady = actualnodo.getDato()
+                    if not visitado[ady]:
+                        visitado[ady] = True
+                        c.insertar(ady)
+                    actualnodo = actualnodo.getSiguiente()
             if not all(visitado):
                 return False
 
         return True
     
     def REA(self, origen=0):
-        d = [float('inf')] * self.__tamanio
-        d[origen] = 0
+        vi = [float('inf')] * self.__tamanio
+        vi[origen] = 0
         c = cola(self.__tamanio)
         c.insertar(origen)
 
         while not c.vacia():
             actual = c.suprimir()
-            nodo_adyacente = self.__grafo[actual]
-            while nodo_adyacente is not None:
-                adyacente = nodo_adyacente.getDato()
-                if d[adyacente] == float('inf'):
-                    d[adyacente] = d[actual] + 1
-                    c.insertar(adyacente)
-                nodo_adyacente = nodo_adyacente.getSiguiente()
 
-        return d
+            actualnodo = self.__grafo[actual]
+            while actualnodo is not None:
+                adyacente = actualnodo.getDato()
+                if vi[adyacente] == float('inf'):
+                    vi[adyacente] = vi[actual] + 1
+                    c.insertar(adyacente)
+                actualnodo = actualnodo.getSiguiente()
+        return vi
     
     def REP(self):
         d = [0] * self.__tamanio

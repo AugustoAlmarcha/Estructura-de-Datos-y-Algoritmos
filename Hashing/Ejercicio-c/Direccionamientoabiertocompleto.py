@@ -11,8 +11,8 @@ class TablaHash:
     __tamanio:int
 
     def __init__(self, tamanio:int):
-        self.__tamanio = tamanio
-        self.__tabla = np.empty(tamanio, dtype=object)
+        self.__tamanio = int(tamanio / 0.7) # Factor de carga 0.7
+        self.__tabla = np.empty(self.__tamanio, dtype=object)
     
     #----------------------------------------------------------------------#
     #Metodo Insertar y Buscar con la politica de secuencia de prueba lineal
