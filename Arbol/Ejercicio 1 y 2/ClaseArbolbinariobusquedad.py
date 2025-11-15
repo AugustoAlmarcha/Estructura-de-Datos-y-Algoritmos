@@ -206,8 +206,7 @@ class ArbolBinarioBusqueda:
             # Verificamos si X es hijo directo
             izquierdo = nodoZ.getIzquierdo()
             derecho = nodoZ.getDerecho()
-            if (izquierdo is not None and izquierdo.getDato() == datoX) or \
-            (derecho is not None and derecho.getDato() == datoX):
+            if (izquierdo is not None and izquierdo.getDato() == datoX) or (derecho is not None and derecho.getDato() == datoX):
                 return True
             else:
                 return False

@@ -1,4 +1,3 @@
-#DIGRAFO PONDERADO
 import numpy as np
 from Colasecuencial import cola
 
@@ -8,26 +7,27 @@ class digrafoSecuencial:
 
     def __init__(self,tamanio):
         self.__tamanio=tamanio
-        self.__grafo=np.zeros((tamanio,tamanio),dtype=float)
+        self.__grafo=np.zeros((tamanio,tamanio),dtype=object)
     
-    def agregarArista(self, inicio, fin, peso=1):
-        if 0 <= inicio < self.__tamanio and 0 <= fin < self.__tamanio:
-            self.__grafo[inicio][fin] = peso
+    def agregarArista(self, u , v):
+        if 0 <= u < self.__tamanio and 0 <= v < self.__tamanio:
+            self.__grafo[u][v] = 1
         else:
             print("Error: Vertice fuera de rango")
 
-    def adyacentes(self, vertice):
-        if 0 <= vertice < self.__tamanio:
-            lista = []
-            for i in range(self.__tamanio):
-                if self.__grafo[vertice][i] != 0:
-                    lista.append(i)
-            return lista
-        else:
+    def adyacentes(self, u):
+        if not (0 <= u < self.__tamanio):
             print("Error: Vertice fuera de rango")
             return None
+        else:
+            lista = []
+            for i in range(self.__tamanio):
+                if self.__grafo[u][i] == 1:
+                    lista.append(i)
+            return lista
+
         
-    def Camino(self, u, v):
+    def CaminoPonderado(self, u, v):
         # T: [0: Conocido (bool), 1: Distancia (float), 2: Camino/Predecesor (int)]
         T = np.zeros((self.__tamanio, 3), dtype=object)
         T[:, 0] = False            
@@ -94,6 +94,34 @@ class digrafoSecuencial:
         
         return camino
     
+    def CaminoAnchura (self, u, v):
+        if not (0 <= u < self.__tamanio and 0 <= v < self.__tamanio):
+            print("Error: nodos fuera de rango.")
+            return None
+        visitado = [False] * self.__tamanio
+        predecesor = [-1] * self.__tamanio
+        c = cola(self.__tamanio)
+        c.insertar(u)
+        visitado[u] = True
+
+        while not c.vacia():
+            actual = c.suprimir()
+            if actual == v:
+                camino = []
+                while actual != -1:
+                    camino.insert(0,actual)
+                    actual = predecesor[actual]
+                return camino
+            
+            for i in range(self.__tamanio):
+                if self.__grafo[actual][i] == 1 and not visitado[i]:
+                    visitado[i] = True
+                    predecesor[i] = actual
+                    c.insertar(i)
+        print("No se encontro camino")
+        return
+
+    
     def fuertementeconexo(self):
         for origen in range(self.__tamanio):
             visitado = [False] * self.__tamanio
@@ -103,7 +131,7 @@ class digrafoSecuencial:
             while not c.vacia():
                 actual = c.suprimir()
                 for i in range(self.__tamanio):
-                    if self.__grafo[actual][i] != 0 and not visitado[i]:
+                    if self.__grafo[actual][i] == 1 and not visitado[i]:
                         visitado[i] = True
                         c.insertar(i)
             if not all(visitado):
@@ -111,46 +139,46 @@ class digrafoSecuencial:
         return True
     
     def REA(self, origen=0):
-        d = [float('inf')] * self.__tamanio 
-        d[origen] = 0                        
+        vi = [float('inf')] * self.__tamanio 
+        vi[origen] = 0                        
         c = cola(self.__tamanio)
         c.insertar(origen)
 
         while not c.vacia():
-            v = c.suprimir()
-            print(f"Nodo procesado: {v}")
+            ac = c.suprimir()
+            print(f"Nodo procesado: {ac}")
 
-            for u in range(self.__tamanio):
-                if self.__grafo[v][u] != 0 and d[u] == float('inf'):
-                    d[u] = d[v] + 1 
-                    c.insertar(u)
+            for i in range(self.__tamanio):
+                if self.__grafo[ac][i] != 0 and vi[i] == float('inf'):
+                    vi[i] = vi[ac] + 1 
+                    c.insertar(i)
+        return vi
     
     def REP(self):
         d = [0] * self.__tamanio
         f = [0] * self.__tamanio
         tiempo = [0]
 
-        for v in range(self.__tamanio):
-            if d[v] == 0:
-                self.REP_visita(v, d, f, tiempo)
+        for i in range(self.__tamanio):
+            if d[i] == 0:
+                self.REP_visita(i, d, f, tiempo)
 
-    def REP_visita(self, s, d, f, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
+    def REP_visita(self, i , d, f, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
         tiempo[0] += 1
-        d[s] = tiempo[0]
+        d[i] = tiempo[0]
 
-        for u in range(self.__tamanio):
-            if self.__grafo[s][u] != 0:
-                if d[u] == 0:
-                    if not self.REP_visita(u, d, f, tiempo, s, detectar_ciclo, procesar_nodo):
+        for j in range(self.__tamanio):
+            if self.__grafo[i][j] != 0:
+                if d[j] == 0:
+                    if not self.REP_visita(j , d, f, tiempo, i, detectar_ciclo, procesar_nodo):
                         return False
-                elif detectar_ciclo and f[u] == 0 and u != padre:
+                elif detectar_ciclo and f[j] == 0 and j != padre:
                     return False
 
         tiempo[0] += 1
-        f[s] = tiempo[0]
-
+        f[i] = tiempo[0]
         if procesar_nodo:
-            print(f"Nodo procesado: {s}")
+            print(f"Nodo procesado: {i}")
 
         return True
     
@@ -159,43 +187,54 @@ class digrafoSecuencial:
         f = [0] * self.__tamanio
         tiempo = [0]
 
-        for v in range(self.__tamanio):
-            if d[v] == 0:
-                if not self.REP_visita(v, d, f, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
+        for i in range(self.__tamanio):
+            if d[i] == 0:
+                if not self.REP_visita(i, d, f, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
                     return False
         return True
     
     def GradoEntrada(self, v):
-        if 0 <= v < self.__tamanio:
-            grado = 0
-            for i in range(self.__tamanio):
-                if self.__grafo[i][v] != 0:
-                    grado += 1
-            return grado
-        else:
+        if not (0 <= v < self.__tamanio):
             print("Error: Vertice fuera de rango")
             return None
+        else:
+            entrada = 0
+            for i in range(self.__tamanio):
+                if self.__grafo[i][v] == 1:
+                    entrada += 1
+            return entrada
     
-    def GradoSalida(self, v):
-        if 0 <= v < self.__tamanio:
-            grado = 0
-            for i in range(self.__tamanio):
-                if self.__grafo[v][i] != 0:
-                    grado += 1
-            return grado
-        else:
+    def GradoSalida(self, u):
+        if not (0 <= u < self.__tamanio):
             print("Error: Vertice fuera de rango")
             return None
+        else:
+            salida = 0
+            for i in range(self.__tamanio):
+                if self.__grafo[u][i] == 1:
+                    salida += 1
+            return salida
+
     
     def NodoFuente(self, v):
         grad_entrada = self.GradoEntrada(v)
         grad_salida = self.GradoSalida(v)
-        return grad_salida > 0 and grad_entrada == 0
+        if grad_entrada == 0 and grad_salida > 0:
+            print("Es un nodo fuente")
+            return True
+        else:
+            print("No es un nodo fuente")
+            return False
     
     def NodoSumidero(self, v):
         grad_entrada = self.GradoEntrada(v)
         grad_salida = self.GradoSalida(v)
-        return grad_entrada > 0 and grad_salida == 0
+        if grad_entrada > 0 and grad_salida == 0:
+            print("Es un nodo sumidero")
+            return True
+        else:
+            print("No es un nodo sumidero")
+            return False
     
 # if __name__ == "__main__":
 #     g = digrafoSecuencial(5)

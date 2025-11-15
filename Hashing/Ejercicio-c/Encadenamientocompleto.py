@@ -28,9 +28,9 @@ class TablaHash:
     __tamanio:int
 
     def __init__(self, tamanio:int):
-        self.__tamanio = tamanio
-        self.__tabla = np.empty(tamanio, dtype=object)
-        for i in range(tamanio):
+        self.__tamanio = int(tamanio / 0.7)  # Factor de carga 0.7
+        self.__tabla = np.empty(self.__tamanio, dtype=object)
+        for i in range(self.__tamanio):
             self.__tabla[i] = None
 
     def insertar(self, clave):

@@ -20,11 +20,15 @@ class GrafoSecuencial:
         if not (0 <= u < self.__tamanio):
             print("Nodo fuera de rango")
             return []
+        
         lista = []
-        for v in range(self.__tamanio):
+        v = 0
+        while v < self.__tamanio:
             if self.__grafo[u][v] == 1:
                 lista.append(v)
+            v += 1
         return lista
+
     
     def Camino(self, u, v): #Recorrido en Anchura
         if not (0 <= u < self.__tamanio and 0 <= v < self.__tamanio):
@@ -35,6 +39,7 @@ class GrafoSecuencial:
         c = cola(self.__tamanio)
         visitado[u] = True
         c.insertar(u)
+
         while not c.vacia():
             actual = c.suprimir()
             if actual == v:
@@ -44,6 +49,7 @@ class GrafoSecuencial:
                     camino.insert(0, actual)
                     actual = predecesor[actual]
                 return camino
+            
             for i in range(self.__tamanio):
                 if self.__grafo[actual][i] == 1 and not visitado[i]:
                     visitado[i] = True
@@ -55,10 +61,12 @@ class GrafoSecuencial:
     def conexo(self):
         visitado = [False] * self.__tamanio
         c = cola(self.__tamanio)
-        c.insertar(0)
         visitado[0] = True
+        c.insertar(0)
+
         while not c.vacia():
             actual = c.suprimir()
+
             for i in range(self.__tamanio):
                 if self.__grafo[actual][i] == 1 and not visitado[i]:
                     visitado[i] = True
@@ -66,56 +74,57 @@ class GrafoSecuencial:
         return all(visitado)
     
     def REA(self, origen=0):
-        d = [float('inf')] * self.__tamanio 
-        d[origen] = 0                        
+        vi = [float('inf')] * self.__tamanio 
+        vi[origen] = 0                        
         c = cola(self.__tamanio)
         c.insertar(origen)
 
         while not c.vacia():
-            v = c.suprimir()
-            print(f"Nodo procesado: {v}")
+            ac = c.suprimir()
+            print(f"Nodo procesado: {ac}")
 
-            for u in range(self.__tamanio):
-                if self.__grafo[v][u] == 1 and d[u] == float('inf'):
-                    d[u] = d[v] + 1 
-                    c.insertar(u)
+            for i in range(self.__tamanio):
+                if self.__grafo[ac][i] == 1 and vi[i] == float('inf'):
+                    vi[i] = vi[ac] + 1 
+                    c.insertar(i)
+        return vi
 
     def REP(self):
-        d = [0] * self.__tamanio
-        f = [0] * self.__tamanio
+        descubrimiento = [0] * self.__tamanio
+        fin = [0] * self.__tamanio
         tiempo = [0]
 
-        for v in range(self.__tamanio):
-            if d[v] == 0:
-                self.REP_visita(v, d, f, tiempo, detectar_ciclo=False, procesar_nodo=True)
+        for i in range(self.__tamanio):
+            if descubrimiento[i] == 0:
+                self.REP_visita(i, descubrimiento, fin, tiempo, detectar_ciclo=False, procesar_nodo=True)
 
-    def REP_visita(self, s, d, f, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
+    def REP_visita(self, i, desc, fin, tiempo, padre=None, detectar_ciclo=False, procesar_nodo=False):
         tiempo[0] += 1
-        d[s] = tiempo[0]
+        desc[i] = tiempo[0]
 
         if procesar_nodo:
-            print(f"Nodo procesado: {s}")
+            print(f"Nodo procesado: {i}")
 
-        for u in range(self.__tamanio):
-            if self.__grafo[s][u] == 1:
-                if d[u] == 0:
-                    if not self.REP_visita(u, d, f, tiempo, s, detectar_ciclo, procesar_nodo):
+        for j in range(self.__tamanio):
+            if self.__grafo[i][j] == 1:
+                if desc[j] == 0:
+                    if not self.REP_visita(j, desc, fin, tiempo, i, detectar_ciclo, procesar_nodo):
                         return False
-                elif detectar_ciclo and f[u] == 0 and u != padre:
+                elif detectar_ciclo and fin[j] == 0 and j != padre:
                     return False
 
         tiempo[0] += 1
-        f[s] = tiempo[0]
+        fin[i] = tiempo[0]
         return True
     
     def aciclico(self):
-        d = [0] * self.__tamanio
-        f = [0] * self.__tamanio
+        des = [0] * self.__tamanio
+        fin = [0] * self.__tamanio
         tiempo = [0]
 
-        for v in range(self.__tamanio):
-            if d[v] == 0:
-                if not self.REP_visita(v, d, f, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
+        for i in range(self.__tamanio):
+            if des[i] == 0:
+                if not self.REP_visita(i, des, fin, tiempo, padre=-1, detectar_ciclo=True, procesar_nodo=False):
                     return False
         return True
 

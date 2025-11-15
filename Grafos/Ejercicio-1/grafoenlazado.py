@@ -42,6 +42,7 @@ class GrafoEnlazado:
         c = cola(self.__tamanio)
         visitado[u] = True
         c.insertar(u)
+
         while not c.vacia():
             actual = c.suprimir()
             if actual == v:
@@ -51,14 +52,15 @@ class GrafoEnlazado:
                     camino.insert(0, actual)
                     actual = predecesor[actual]
                 return camino
-            nodo_adyacente = self.__grafo[actual]
-            while nodo_adyacente is not None:
-                adyacente = nodo_adyacente.getDato()
+            
+            actualnodo = self.__grafo[actual]
+            while actualnodo is not None:
+                adyacente = actualnodo.getDato()
                 if not visitado[adyacente]:
                     visitado[adyacente] = True
                     predecesor[adyacente] = actual
                     c.insertar(adyacente)
-                nodo_adyacente = nodo_adyacente.getSiguiente()
+                actualnodo = actualnodo.getSiguiente()
         print("No existe camino entre", u, "y", v)
         return None
     
@@ -67,15 +69,17 @@ class GrafoEnlazado:
         c = cola(self.__tamanio)
         c.insertar(0)
         visitado[0] = True
+
         while not c.vacia():
             actual = c.suprimir()
-            nodo_adyacente = self.__grafo[actual]
-            while nodo_adyacente is not None:
-                adyacente = nodo_adyacente.getDato()
+            
+            actualnodo = self.__grafo[actual]
+            while actualnodo is not None:
+                adyacente = actualnodo.getDato()
                 if not visitado[adyacente]:
                     visitado[adyacente] = True
                     c.insertar(adyacente)
-                nodo_adyacente = nodo_adyacente.getSiguiente()
+                actualnodo = actualnodo.getSiguiente()
         return all(visitado)
     
     def REA(self, origen=0):
@@ -83,15 +87,17 @@ class GrafoEnlazado:
         d[origen] = 0                        
         c = cola(self.__tamanio)
         c.insertar(origen)
+
         while not c.vacia():
             actual = c.suprimir()
-            nodo_adyacente = self.__grafo[actual]
-            while nodo_adyacente is not None:
-                adyacente = nodo_adyacente.getDato()
+            
+            actualnodo = self.__grafo[actual]
+            while actualnodo is not None:
+                adyacente = actualnodo.getDato()
                 if d[adyacente] == float('inf'):
                     d[adyacente] = d[actual] + 1
                     c.insertar(adyacente)
-                nodo_adyacente = nodo_adyacente.getSiguiente()
+                actualnodo = actualnodo.getSiguiente()
         return d
     
     def REP(self):
